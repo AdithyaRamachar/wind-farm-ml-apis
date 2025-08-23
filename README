@@ -1,0 +1,136 @@
+🌪 Wind Farm ML Models – Deployment Guide
+
+This repository contains three ML pipelines for wind farm operations:
+
+Power Generation Prediction (power-prediction/)
+
+Turbine Control Optimization (turbine-optimization/)
+
+Wind Farm Alert Classification (alert-classification/)
+
+Each service has:
+
+train.py → trains model, saves artifacts
+
+app.py → FastAPI app for serving predictions
+
+Dockerfile → containerized deployment
+
+models/ → directory where trained artifacts are stored
+
+A docker-compose.yml orchestrates all training/serving containers.
+
+📦 Project Structure
+.
+├── docker-compose.yml
+├── power-prediction/
+│   ├── train.py
+│   ├── app.py
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── models/
+│
+├── turbine-optimization/
+│   ├── train.py
+│   ├── app.py
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── models/
+│
+└── alert-classification/
+    ├── train.py
+    ├── app.py
+    ├── Dockerfile
+    ├── requirements.txt
+    └── models/
+
+⚙️ Setup
+1. Install Docker & Compose
+
+Ensure you have Docker Engine + Compose installed:
+https://docs.docker.com/get-docker/
+
+2. Dataset
+
+Place your dataset file in each service directory (e.g., unified_windfarm_dataset.csv).
+Or mount a shared dataset directory via volumes: in docker-compose.yml.
+
+🚀 Training
+
+Each model has a train container. Example:
+
+docker compose run --rm power-train
+docker compose run --rm turbine-train
+docker compose run --rm alert-train
+
+
+Trained models are saved in each models/ directory:
+
+model_bundle.pkl → includes model, scaler, encoders, metadata
+
+scaler.joblib → backup scaler
+
+🌐 Serving APIs
+
+Start the FastAPI services:
+
+docker compose up -d power-api turbine-api alert-api
+
+
+Each service runs on its own port:
+
+Power Prediction API → http://localhost:8001/docs
+
+Turbine Optimization API → http://localhost:8002/docs
+
+Alert Classification API → http://localhost:8003/docs
+
+Health Check
+curl http://localhost:8001/healthz
+curl http://localhost:8002/healthz
+curl http://localhost:8003/healthz
+
+🧪 Example Request
+Power Prediction
+curl -X POST "http://localhost:8001/predict" \
+  -H "Content-Type: application/json" \
+  -d '{"wind_speed_100m": 12.5, "air_density_kg_m3": 1.225, "temperature_2m": 15.0}'
+
+Turbine Optimization
+curl -X POST "http://localhost:8002/predict" \
+  -H "Content-Type: application/json" \
+  -d '{"wind_speed_100m": 8.0, "temperature_2m": 15.0, "pressure_msl": 1013.25, "air_density_kg_m3": 1.225}'
+
+Alert Classification
+curl -X POST "http://localhost:8003/predict" \
+  -H "Content-Type: application/json" \
+  -d '{"actual_power_kw": 1200, "nacelle_temp_c": 55, "vibration_mm_s": 2.3, "wind_speed_100m": 10.2}'
+
+🛠️ Development with VS Code
+
+Install Docker extension + Dev Containers plugin.
+
+Open this repo in VS Code → Reopen in Container.
+
+Run/debug each service with integrated terminal:
+
+docker compose run --rm power-train
+docker compose up power-api
+
+🔄 Lifecycle
+
+Train → docker compose run --rm <model>-train
+
+Serve → docker compose up -d <model>-api
+
+Test → via /docs Swagger UI or curl
+
+Retrain → repeat train step with new data
+
+📊 Business Impact
+
+Power Prediction → forecast energy output for grid planning
+
+Turbine Optimization → maximize uptime & performance under weather variability
+
+Alert Classification → early detection of failures, reduce downtime

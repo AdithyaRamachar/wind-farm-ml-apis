@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Power API (uvicorn)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["app:app", "--host", "0.0.0.0", "--port", "8001"],
+      "cwd": "${workspaceFolder}/power-prediction",
+      "jinja": true,
+      "console": "integratedTerminal",
+      "env": { "MODEL_PATH": "models/power_model.joblib" }
+    },
+    {
+      "name": "Turbine API (uvicorn)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["app:app", "--host", "0.0.0.0", "--port", "8002"],
+      "cwd": "${workspaceFolder}/turbine-optimization",
+      "console": "integratedTerminal",
+      "env": {
+        "MODEL_PATH": "models/best_model.joblib",
+        "SCALER_PATH": "models/scaler.joblib",
+        "FEATURES_PATH": "models/features.joblib"
+      }
+    },
+    {
+      "name": "Alert API (uvicorn)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["app:app", "--host", "0.0.0.0", "--port", "8003"],
+      "cwd": "${workspaceFolder}/alert-classification",
+      "console": "integratedTerminal",
+      "env": { "BUNDLE_PATH": "models/model_bundle.pkl" }
+    }
+  ]
+}

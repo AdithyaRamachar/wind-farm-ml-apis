@@ -1,0 +1,84 @@
+#version: "3.8"
+
+services:
+  # -------------------------
+  # Power Prediction
+  # -------------------------
+  power-train:
+    build: ./power-prediction
+    container_name: power-train
+    command: python train.py
+    volumes:
+      - ./power-prediction/models:/app/models
+      - ./power-prediction/unified_windfarm_dataset.csv:/app/unified_windfarm_dataset.csv
+    environment:
+      - DATA_PATH=/app/unified_windfarm_dataset.csv
+      - MODEL_DIR=/app/models
+    restart: "no"
+
+  power-api:
+    build: ./power-prediction
+    container_name: power-api
+    environment:
+      - MODEL_PATH=/app/models/power_model.joblib
+    volumes:
+      - ./power-prediction/models:/app/models
+    ports:
+      - "8001:8001"   # gunicorn binds 0.0.0.0:8001
+    restart: unless-stopped
+
+  # -------------------------
+  # Turbine Optimization
+  # ----------------------
+  turbine-train:
+    build: ./turbine-optimization
+    container_name: turbine-train
+    command: python train.py
+    volumes:
+      - ./turbine-optimization/models:/app/models
+      - ./turbine-optimization/unified_windfarm_dataset.csv:/app/unified_windfarm_dataset.csv
+    environment:
+      - DATA_PATH=/app/unified_windfarm_dataset.csv
+      - MODEL_DIR=/app/models
+    restart: "no"
+
+  turbine-api:
+    build: ./turbine-optimization
+    container_name: turbine-api
+    environment:
+      - MODEL_PATH=/app/models/best_model.joblib
+      - SCALER_PATH=/app/models/scaler.joblib
+      - FEATURES_PATH=/app/models/features.joblib
+    volumes:
+      - ./turbine-optimization/models:/app/models
+    ports:
+      - "8002:8002"   # gunicorn binds 0.0.0.0:8002
+    restart: unless-stopped
+
+  # -------------------------
+  # Alert Classification
+  # -------------------------
+  alert-train:
+    build: ./alert-classification
+    container_name: alert-train
+    command: python train.py
+    volumes:
+      - ./alert-classification/models:/app/models
+      - ./alert-classification/unified_windfarm_dataset.csv:/app/unified_windfarm_dataset.csv
+    environment:
+      - DATA_PATH=/app/unified_windfarm_dataset.csv
+      - MODEL_DIR=/app/models
+    restart: "no"
+
+  alert-api:
+    build: ./alert-classification
+    container_name: alert-api
+    environment:
+      - BUNDLE_PATH=/app/models/model_bundle.pkl
+    volumes:
+      - ./alert-classification/models:/app/models
+    ports:
+      - "8003:8003"   # gunicorn binds 0.0.0.0:8003
+    restart: unless-stopped
+
+
