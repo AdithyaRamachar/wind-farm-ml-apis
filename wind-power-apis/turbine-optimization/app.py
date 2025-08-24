@@ -1,9 +1,23 @@
 # turbine-optimization/app.py
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any
 import os, joblib, numpy as np, pandas as pd
+
+API_KEY = os.getenv("API_KEY")
+
+@app.middleware("http")
+async def require_api_key(request: Request, call_next):
+    path = request.url.path
+    # allow unauthenticated access to health/docs/schema if you want
+    open_paths = ("/", "/healthz", "/docs", "/openapi.json", "/schema", "/info")
+    if any(path.startswith(p) for p in open_paths):
+        return await call_next(request)
+    if request.headers.get("x-api-key") != API_KEY:
+        return JSONResponse(status_code=401, content={"detail": "Unauthorized"})
+    return await call_next(request)
 
 MODEL_PATH = os.getenv("MODEL_PATH", "models/best_model.joblib")
 SCALER_PATH = os.getenv("SCALER_PATH", "models/scaler.joblib")

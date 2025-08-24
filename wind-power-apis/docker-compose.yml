@@ -21,6 +21,7 @@ services:
     container_name: power-api
     environment:
       - MODEL_PATH=/app/models/power_model.joblib
+      - API_KEY=${API_KEY}
     volumes:
       - ./power-prediction/models:/app/models
     ports:
@@ -49,6 +50,7 @@ services:
       - MODEL_PATH=/app/models/best_model.joblib
       - SCALER_PATH=/app/models/scaler.joblib
       - FEATURES_PATH=/app/models/features.joblib
+      - API_KEY=${API_KEY}
     volumes:
       - ./turbine-optimization/models:/app/models
     ports:
@@ -75,6 +77,7 @@ services:
     container_name: alert-api
     environment:
       - BUNDLE_PATH=/app/models/model_bundle.pkl
+      - API_KEY=${API_KEY}
     volumes:
       - ./alert-classification/models:/app/models
     ports:
