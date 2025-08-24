@@ -15,17 +15,6 @@ import numpy as np
 
 API_KEY = os.getenv("API_KEY")
 
-@app.middleware("http")
-async def require_api_key(request: Request, call_next):
-    path = request.url.path
-    # allow unauthenticated access to health/docs/schema if you want
-    open_paths = ("/", "/healthz", "/docs", "/openapi.json", "/schema", "/info")
-    if any(path.startswith(p) for p in open_paths):
-        return await call_next(request)
-    if request.headers.get("x-api-key") != API_KEY:
-        return JSONResponse(status_code=401, content={"detail": "Unauthorized"})
-    return await call_next(request)
-
 import pandas as pd
 import logging
 
@@ -99,13 +88,27 @@ app.add_middleware(
 # Global variables for model components
 model = None
 feature_names = []
-model_name = "unknown"
-model_version = "v1.0"
-model_info = {}
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware, 
+    allow_origins=["*"], 
+    allow_methods=["*"], 
+    allow_headers=["*"]
+)
 
-# Pydantic models
+@app.middleware("http")
+async def require_api_key(request: Request, call_next):
+    path = request.url.path
+    # allow unauthenticated access to health/docs/schema if you want
+    open_paths = ("/", "/healthz", "/docs", "/openapi.json", "/schema", "/info")
+    if any(path.startswith(p) for p in open_paths):
+        return await call_next(request)
+    if request.headers.get("x-api-key") != API_KEY:
+        return JSONResponse(status_code=401, content={"detail": "Unauthorized"})
+    return await call_next(request)
+
 class PredictRequest(BaseModel):
-    """Request model for power prediction"""
+    """Request model for prediction endpoint"""
     records: List[Dict[str, Any]] = Field(
         ..., 
         description="List of feature dictionaries for prediction",

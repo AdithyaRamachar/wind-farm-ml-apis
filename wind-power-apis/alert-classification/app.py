@@ -8,6 +8,11 @@ import os, pickle, joblib, numpy as np, pandas as pd
 
 API_KEY = os.getenv("API_KEY")
 
+app = FastAPI(title="Wind Farm Alert Classification API", version="1.0")
+app.add_middleware(
+    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
+)
+
 @app.middleware("http")
 async def require_api_key(request: Request, call_next):
     path = request.url.path
@@ -20,11 +25,6 @@ async def require_api_key(request: Request, call_next):
     return await call_next(request)
 
 BUNDLE_PATH = os.getenv("BUNDLE_PATH", "models/model_bundle.pkl")
-
-app = FastAPI(title="Wind Farm Alert Classification API", version="1.0")
-app.add_middleware(
-    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
-)
 
 # Load the single bundle that contains model, scaler, target_encoder, feature_columns :contentReference[oaicite:6]{index=6}
 try:

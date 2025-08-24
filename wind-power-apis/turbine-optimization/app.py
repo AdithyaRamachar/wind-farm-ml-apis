@@ -8,6 +8,11 @@ import os, joblib, numpy as np, pandas as pd
 
 API_KEY = os.getenv("API_KEY")
 
+app = FastAPI(title="Turbine Control Optimization API", version="1.0")
+app.add_middleware(
+    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
+)
+
 @app.middleware("http")
 async def require_api_key(request: Request, call_next):
     path = request.url.path
@@ -22,11 +27,6 @@ async def require_api_key(request: Request, call_next):
 MODEL_PATH = os.getenv("MODEL_PATH", "models/best_model.joblib")
 SCALER_PATH = os.getenv("SCALER_PATH", "models/scaler.joblib")
 FEATURES_PATH = os.getenv("FEATURES_PATH", "models/features.joblib")
-
-app = FastAPI(title="Turbine Control Optimization API", version="1.0")
-app.add_middleware(
-    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
-)
 
 # Load artifacts saved by your training pipeline (model, scaler, features) :contentReference[oaicite:5]{index=5}
 try:
