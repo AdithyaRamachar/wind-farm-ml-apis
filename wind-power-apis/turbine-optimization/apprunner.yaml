@@ -16,12 +16,12 @@ service:
     unhealthyThreshold: 3
   environment:
     variables:
-      MODEL_S3_BUCKET: ""
-      MODEL_S3_KEY: ""
-      SCALER_S3_KEY: ""
-      FEATURES_S3_KEY: ""
+      MODEL_S3_BUCKET: "demo-turbine-ml-models"
+      MODEL_S3_KEY: "turbine/best_model.joblib"
+      SCALER_S3_KEY: "turbine/scaler.joblib"
+      FEATURES_S3_KEY: "turbine/features.joblib"
       MODEL_PATH: "/app/models/best_model.joblib"
       SCALER_PATH: "/app/models/scaler.joblib"
       FEATURES_PATH: "/app/models/features.joblib"
-      AWS_REGION: ""
-      API_KEY: ""
+      AWS_REGION: "Europe (Stockholm) eu-north-1"
+      API_KEY: "6c7a0f19-8e2b-4e5b-b278-2e36bb7f8d9d"
