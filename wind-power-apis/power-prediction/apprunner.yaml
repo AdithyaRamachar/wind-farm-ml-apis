@@ -1,0 +1,23 @@
+version: 1.0
+
+service:
+  name: power-api
+  build:
+    method: "Dockerfile"
+    dockerfile: "Dockerfile"
+  runtime:
+    port: 8001
+    startCommand: ""
+  healthCheck:
+    path: /healthz
+    interval: 10
+    timeout: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 3
+  environment:
+    variables:
+      MODEL_S3_BUCKET: "demo-turbine-ml-models "
+      MODEL_S3_KEY: "power/power_model.joblib"
+      MODEL_PATH: "/app/models/power_model.joblib"
+      AWS_REGION: "Europe (Stockholm) eu-north-1"
+      API_KEY: "6c7a0f19-8e2b-4e5b-b278-2e36bb7f8d9d"
