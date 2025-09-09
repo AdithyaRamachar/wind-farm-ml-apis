@@ -1,0 +1,23 @@
+version: 1.0
+
+service:
+  name: alert-api
+  build:
+    method: "Dockerfile"
+    dockerfile: "Dockerfile"
+  runtime:
+    port: 8003
+    startCommand: ""
+  healthCheck:
+    path: /healthz
+    interval: 10
+    timeout: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 3
+  environment:
+    variables:
+      BUNDLE_S3_BUCKET: ""
+      BUNDLE_S3_KEY: ""
+      BUNDLE_PATH: "/app/models/model_bundle.pkl"
+      AWS_REGION: ""
+      API_KEY: ""

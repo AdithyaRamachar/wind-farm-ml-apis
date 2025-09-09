@@ -1,0 +1,27 @@
+version: 1.0
+
+service:
+  name: turbine-api
+  build:
+    method: "Dockerfile"
+    dockerfile: "Dockerfile"
+  runtime:
+    port: 8002
+    startCommand: ""
+  healthCheck:
+    path: /healthz
+    interval: 10
+    timeout: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 3
+  environment:
+    variables:
+      MODEL_S3_BUCKET: ""
+      MODEL_S3_KEY: ""
+      SCALER_S3_KEY: ""
+      FEATURES_S3_KEY: ""
+      MODEL_PATH: "/app/models/best_model.joblib"
+      SCALER_PATH: "/app/models/scaler.joblib"
+      FEATURES_PATH: "/app/models/features.joblib"
+      AWS_REGION: ""
+      API_KEY: ""
