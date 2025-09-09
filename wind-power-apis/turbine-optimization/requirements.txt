@@ -10,3 +10,6 @@ lightgbm
 imbalanced-learn
 orjson
 gunicorn
+httpx
+boto3
+requests
