@@ -1,0 +1,16 @@
+# ignore model artifacts and datasets
+models/
+**/models/
+**/*.joblib
+**/*.pkl
+**/*.csv
+
+# python artifacts
+__pycache__/
+*.pyc
+*.pyo
+
+# misc
+.DS_Store
+.env
+deploy.env
