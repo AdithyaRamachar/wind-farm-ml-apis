@@ -23,5 +23,5 @@ service:
       MODEL_PATH: "/app/models/best_model.joblib"
       SCALER_PATH: "/app/models/scaler.joblib"
       FEATURES_PATH: "/app/models/features.joblib"
-      AWS_REGION: "Europe (Stockholm) eu-north-1"
+      AWS_REGION: "eu-west-3"
       API_KEY: "6c7a0f19-8e2b-4e5b-b278-2e36bb7f8d9d"

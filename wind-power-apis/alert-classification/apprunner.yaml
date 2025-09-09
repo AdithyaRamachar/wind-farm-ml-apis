@@ -19,5 +19,5 @@ service:
       BUNDLE_S3_BUCKET: "demo-turbine-ml-models"
       BUNDLE_S3_KEY: "alert/model_bundle.pkl"
       BUNDLE_PATH: "/app/models/model_bundle.pkl"
-      AWS_REGION: "eu-north-1"
+      AWS_REGION: "eu-west-3"
       API_KEY: "6c7a0f19-8e2b-4e5b-b278-2e36bb7f8d9d"
